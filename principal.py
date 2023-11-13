@@ -8,12 +8,15 @@ import random as rd
 # #
 
 Motor=Component(name="Motor")
-GeometryMotor=Propriety(name="Geometry", component=Motor,risk=10)
-print(GeometryMotor.component.name)
+GeometryMotor=Propriety(name="Geometry", component=Motor,risk=100)
+MaterialMotor=Propriety(name="Material", component=Motor,risk=0)
+Link(time=3,attribute1=GeometryMotor,attribute2=MaterialMotor,risk=12)
+comp= [Motor]
 
 
 
+time.sleep(5)
 tick=0
 
-State_machine(propriety=GeometryMotor,tick=tick)
+State_machine(components=comp,tick=tick)
     
