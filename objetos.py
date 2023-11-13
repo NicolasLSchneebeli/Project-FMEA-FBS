@@ -1,6 +1,6 @@
 import random as rd
 import time 
-
+import numpy as np
 
 def State_machine(components, tick):
     while True:
@@ -10,35 +10,40 @@ def State_machine(components, tick):
                 states = ["Working", "Failed"]
                 weights = [100-risk,risk]
                 result= rd.choices(states,weights,k=1)[0]
-                print(f"STATE: {propriety.name} is {result}")
-                
-                
-                
+                             
                 if result == "Failed" and propriety.state_change ==False:
                     propriety.state=propriety.changeState()
                     propriety.state_change= True
                     print(f"{propriety.name} from {propriety.component.name} just failed! TICK: {tick}")
-                    time.sleep(3)
+                    
                     propriety.risk=100
                     propriety.addFailedTick(tick)
                     
                     
                 elif propriety.state_change == True:
                     print(f"{propriety.name} from {propriety.component.name} failed! TICK: {tick}")
-                    propriety.getLinks()
-                    if propriety.FailedTick + tick == propriety.getLinks()[3]:
-                        risk= Link.risk
-                        states = ["Working", "Failed"]
-                        weights = [100-risk,risk]
-                        resultinf= rd.choices(states,weights,k=1)[0]
+                    vector_link = np.asarray(propriety.getLinks())
+                    if len(vector_link) >0:
+                        for i in range(len(vector_link)):
+                            if propriety.FailedTick + tick == vector_link[i][3]:
+                                risk= vector_link[i][1]
+                                states = ["Working", "Failed"]
+                                weights = [100-risk,risk]
+                                resultinf= rd.choices(states,weights,k=1)[0]
 
-                        if resultinf == "Failed":
-                            Link.infect()
-                    time.sleep(3)        
+                                if resultinf == "Failed":
+                                    vector_link[i][2].state= False
+                                    vector_link[i][2].change_State= True
+                                    vector_link[i][2].risk=100
+                                    print(f"{vector_link[i][2].name} was infected")
+                                
+                            else:
+                                pass
+                    else:
+                        pass
                 else:
                     print(f'{propriety.name} from {propriety.component.name} still working in tick {tick}!!')
-                    time.sleep(3)
-
+                    
         tick +=1
     
 
@@ -90,9 +95,9 @@ class Propriety():
 
     def getLinks(self):
         for link in self.link:
-            print(f"There is a link between {link[0].name} and {link[2].name} with risk {link[1]}")
-
-                
+            # print(f"There is a link between {link[0].name} and {link[2].name} with risk {link[1]}")
+            return self.link
+                        
 class Link():
     
     def __init__(self,time,risk,attribute1, attribute2) -> None:  
