@@ -11,9 +11,12 @@ TemperatureMotor=Propriety(name="Temperature", component=Motor,risk=0)
 
 fan= Component(name="Fan")
 GeometryFan= Propriety(name="Geometry", component=fan,risk=1)
-
+Link(time=10, attribute1=GeometryFan,attribute2=MaterialMotor,risk=10)
 Link(time=3,attribute1=GeometryMotor,attribute2=MaterialMotor,risk=100)
 Link(time=12,attribute1=GeometryMotor,attribute2=TemperatureMotor,risk=50)
+
+
+
 
 comp= [Motor,fan]
 tick=0

@@ -23,7 +23,7 @@ def State_machine(components, tick):
                 elif propriety.state_change == True:
                     print(f"{propriety.name} from {propriety.component.name} failed! TICK: {tick}")
                     vector_link = np.asarray(propriety.getLinks())
-                    if len(vector_link) >0:
+                    if vector_link.size > 0:
                         for i in range(len(vector_link)):
                             if propriety.FailedTick + tick == vector_link[i][3]:
                                 risk= vector_link[i][1]
@@ -36,9 +36,11 @@ def State_machine(components, tick):
                                     vector_link[i][2].change_State= True
                                     vector_link[i][2].risk=100
                                     print(f"{vector_link[i][2].name} was infected")
-                                
+                                else:
+                                    pass
                             else:
                                 pass
+                            
                     else:
                         pass
                 else:
