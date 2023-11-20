@@ -6,7 +6,7 @@ import numpy as np
 
 #Funciton to run the simulation 
 def State_machine(components, tick):
-    while True: #tick<10:
+    while tick<10:
         for component in components:
             for propriety in component.attribute: 
                 #IF ATTRIBUTE HAS NOT FAILED YET CONTINUE WITHIN THE LOOP

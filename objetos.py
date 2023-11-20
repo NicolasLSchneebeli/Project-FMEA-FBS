@@ -21,13 +21,13 @@ class Component():
         
     #Give a list of all atributes given to the component
     def getAttribute(self):
-        print(f"There are {self.attribute} atributes linked to {self.name}")
+        print(f"There are {self.attribute.name} atributes linked to {self.name}")
         return [attr.name for attr in self.attribute]
 
 
 #Create each ATTRIBUTE linkin it with a COMPONENT
 class Propriety():
-        
+    #Constructor
     def __init__(self,name,component,risk) -> None:
         self.name= name
         self.component=component
@@ -37,21 +37,25 @@ class Propriety():
         self.link=[]
         print(f"Attribute created named {self.name} part of {self.component.name}")   
    
-
+    #Just to confirm if is ok
     def getComponent(self):
         print(f'{self.name} is part of {self.component}')    
-              
+      
+    #Add time when this component failed!      
     def addFailedTick(self,tick):
         self.FailedTick= tick
-        
+    
+    #Create via ENTITIY NAMED LINK!!
     def addLinkToAttribute(self, attr2, risk,time_to_infect,status):
         self.link.append([self, attr2,time_to_infect, risk,status])  
-
+    
+    #LIST OF LINKS COMPOSED OF ATT1, ATT2, RISK, COOLDOWN TIME, STATUS
     def getLinks(self):
         for link in self.link:
             print(f"There is a link between {link[0].name} (FROM: {link[0].component.name}) and {link[1].name} (FROM: {link[1].component.name}) with risk {link[3]}") 
         return self.link
-        
+    
+    #Change our entity state to FAILEd
     def getInfected(self,t):
         self.state=False
         self.addFailedTick(tick=t)           
@@ -71,17 +75,8 @@ class Link():
         attribute2.addLinkToAttribute(attr2=self.attribute1, risk=self.risk,time_to_infect= self.time_to_infect,status=self.stat) 
                  
         print(f"{self.__class__.__name__} created between {attribute1.name} and {attribute2.name}")
-
-    def infect(self):
-        if self.attribute1.state== False:
-            self.attribute2.state== False
-            print(f"{self.attribute1.name} infected {self.attribute2.name}")
             
-        if self.attribute2.state==False:
-            self.attribute1.state== False
-            print(f"{self.attribute2.name} infected {self.attribute1.name}")
-            
-#Perhaps adding as a metaAttribute might work!             
+#Perhaps adding as a metaAttribute/Component might work!             
 class Behaviour():
     
     def __init__(self,name) -> None:
