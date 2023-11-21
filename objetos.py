@@ -35,7 +35,7 @@ class Propriety():
         self.state= True 
         self.component.addAttribute(self)
         self.link=[]
-        print(f"Attribute created named {self.name} part of {self.component.name}")   
+        # print(f"Attribute created named {self.name} part of {self.component.name}")   
    
     #Just to confirm if is ok
     def getComponent(self):
@@ -60,7 +60,8 @@ class Propriety():
         self.state=False
         self.addFailedTick(tick=t)           
         
-#NOTE: CREATING EACH LINK FOR EACH ATTRIBUTE      
+#NOTE: CREATING EACH LINK FOR EACH ATTRIBUTE
+'''How to create other kinds of links such as Temperatures/Distance etc. Don't see how this would impact the simul in general...?'''      
 class Link():
     
     def __init__(self,time,risk,attribute1, attribute2) -> None:  
@@ -76,9 +77,29 @@ class Link():
                  
         print(f"{self.__class__.__name__} created between {attribute1.name} and {attribute2.name}")
             
-#Perhaps adding as a metaAttribute/Component might work!             
+#Perhaps adding as a Bigger Attribute/Component might work! 
+''' How to implement their links?'''             
 class Behaviour():
     
     def __init__(self,name) -> None:
         self.name=name
+        self.condition= []
+        self.c_state= True
+        self.state= True  
         print(f"{self.__class__.__name__} created named {self.name}")
+
+    def checkCondition(self):
+        c_state=[comp.state for comp in self.condition]
+        if all(c_state)==False:
+            self.state= False
+            print(f'{self.name} has failed!')
+        else: 
+            self.state= True    
+            print(f"{self.name} working")
+            
+    def addCondition(self, conditions):
+        self.condition.append(conditions)
+        print(f"Created a condtion that {conditions.name} has to work for  {self.name} to continue working")
+
+
+        
