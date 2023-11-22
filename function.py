@@ -1,14 +1,16 @@
-
-import random as rd
-import time 
+import pandas as pd
+import datetime as dt
 import numpy as np
-
+import random as rd
+import time
 
 #Funciton to run the simulation 
 def State_machine(components, tick, behaviour):
     status,erro= check(component=components)
+    df= pd.DataFrame(columns= ['Tick','Attribute','Component','Origin'])
+    
     if status == True:
-        while behaviour.state==True:
+        while all(behavior.state==True for behavior in behaviour):
             print(f'----------------------------TICK {tick}-------------------------------')
             for component in components:
                 for propriety in component.attribute: 
@@ -22,7 +24,7 @@ def State_machine(components, tick, behaviour):
                         if result == "Failed":
                             propriety.state=False
                             print(f"{propriety.name} from {propriety.component.name} *just* failed on tick: {tick}")
-                            propriety.addFailedTick(tick)
+                            propriety.addFailedTick(tick=tick,data=df,origin='self')
                             
                         else:
                             print(f"{propriety.name} from {propriety.component.name} is {result}")
@@ -41,19 +43,26 @@ def State_machine(components, tick, behaviour):
                             perhaps it is a good alternative since is easy to determine unlike temperature for exemple, 
                             which I imagine taking a lot of the memory of the PC. )'''
                             
-                            if tick - propriety.FailedTick  == links_of_propriety[i][2] and links_of_propriety[i][4]== False:
+                            if tick - propriety.FailedTick  == links_of_propriety[i][2] and links_of_propriety[i][4]== True:
                                 risk= links_of_propriety[i][3]
                                 links_of_propriety[i][4]== False
                                 weights = [100-risk,risk]
                                 resultinf= rd.choices(states,weights,k=1)[0]
                                 if resultinf == "Failed":
-                                    links_of_propriety[i][1].getInfected(t=tick)
+                                    links_of_propriety[i][1].getInfected(t=tick,data=df,origin=f'{links_of_propriety[i][0]}.name')
+                                    links_of_propriety[i][4]=False 
+                                    '''Doesnt change for the other link.
+                                    I dont know how to acess the other and 
+                                    change its state too, dont see as priority either.'''
                                     print(f"{links_of_propriety[i][1].name} from {links_of_propriety[i][1].component.name} was infected by {propriety.name}")
                             else:
                                 continue   
-            behaviour.checkCondition()
+            for beh in behaviour:
+                beh.checkCondition()
             tick +=1
             time.sleep(3)
+        else:
+            toSave(df=df)
     else:
         print(erro)
 #NOTE: Think about what to return here!!
@@ -82,3 +91,8 @@ def check(component):
     else:
         erro= None
         return True,erro
+    
+    
+def toSave(df):
+    df.to_csv(f'Projeto_FRANÇA/Simulation/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
+    

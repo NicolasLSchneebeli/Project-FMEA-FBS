@@ -1,12 +1,24 @@
 from objetos import *
-from function import State_machine
+from function import *
 import pandas as pd 
-import time
-import random as rd
-import numpy as np 
 
-motor=Component(name="Motor")
-motor1=Component(name="Motor1")
+motor= Component(name="Motor")
+geometry= Propriety(name="Geometry", component= motor,risk=90)
+material= Propriety(name="Material",component= motor, risk=90)
+Link(time=2, attribute1=geometry, attribute2=material,risk=90)
+material.getLinks()
+
+
+
+Mov=Behaviour(name="Movement")
+Mov.addCondition(material)
+Mov.addCondition(geometry)
+Inf_Iteraction= Behaviour(name="teste")
+
+
+
+# motor=Component(name="Motor")
+# motor1=Component(name="Motor1")
 
 # GeometryMotor=Propriety(name="Geometry", component=Motor,risk=10)
 # MaterialMotor=Propriety(name="Material", component=Motor,risk=10)
@@ -22,7 +34,8 @@ motor1=Component(name="Motor1")
 # Link(time=3,attribute1=TemperatureMotor,attribute2=MaterialMotor,risk=10)
 
 
-comp= [motor,motor1]
+comp= [motor]
 tick=0
-# print('-----------------------------------------------------------')
-State_machine(components=comp,tick=tick)
+
+State_machine(components=comp,tick=tick,behaviour=[Mov])
+

@@ -42,8 +42,10 @@ class Propriety():
         print(f'{self.name} is part of {self.component}')    
       
     #Add time when this component failed!      
-    def addFailedTick(self,tick):
+    def addFailedTick(self,tick,data,origin):
         self.FailedTick= tick
+        data.loc[len(data)]=(self.FailedTick,self.name,self.component.name,origin)
+
     
     #Create via ENTITIY NAMED LINK!!
     def addLinkToAttribute(self, attr2, risk,time_to_infect,status):
@@ -56,9 +58,9 @@ class Propriety():
         return self.link
     
     #Change our entity state to FAILEd
-    def getInfected(self,t):
+    def getInfected(self,t,origin,df):
         self.state=False
-        self.addFailedTick(tick=t)           
+        self.addFailedTick(tick=t,df=df,origin=origin)           
         
 #NOTE: CREATING EACH LINK FOR EACH ATTRIBUTE
 '''How to create other kinds of links such as Temperatures/Distance etc. Don't see how this would impact the simul in general...?'''      
@@ -90,7 +92,9 @@ class Behaviour():
 
     def checkCondition(self):
         c_state=[comp.state for comp in self.condition]
-        if all(c_state)==False:
+        if c_state==[]:
+            c_state=[True]
+        if all(state == False for state in c_state):
             self.state= False
             print(f'{self.name} has failed!')
         else: 
