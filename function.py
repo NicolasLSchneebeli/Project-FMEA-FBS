@@ -49,7 +49,7 @@ def State_machine(components, tick, behaviour):
                                 weights = [100-risk,risk]
                                 resultinf= rd.choices(states,weights,k=1)[0]
                                 if resultinf == "Failed":
-                                    links_of_propriety[i][1].getInfected(t=tick,data=df,origin=f'{links_of_propriety[i][0]}.name')
+                                    links_of_propriety[i][1].getInfected(t=tick,df=df,origin=f'{links_of_propriety[i][0].name} from {links_of_propriety[i][0].component.name}')
                                     links_of_propriety[i][4]=False 
                                     '''Doesnt change for the other link.
                                     I dont know how to acess the other and 
@@ -94,5 +94,5 @@ def check(component):
     
     
 def toSave(df):
-    df.to_csv(f'Projeto_FRANÇA/Simulation/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
-    
+    df.to_csv(f'Simulation/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
+    #cant save in a excel file. Dont know why yet, but its not priority i think. 

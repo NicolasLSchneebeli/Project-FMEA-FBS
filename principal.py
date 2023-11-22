@@ -1,6 +1,5 @@
 from objetos import *
 from function import *
-import pandas as pd 
 
 motor= Component(name="Motor")
 geometry= Propriety(name="Geometry", component= motor,risk=90)

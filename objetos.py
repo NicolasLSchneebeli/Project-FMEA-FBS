@@ -60,7 +60,7 @@ class Propriety():
     #Change our entity state to FAILEd
     def getInfected(self,t,origin,df):
         self.state=False
-        self.addFailedTick(tick=t,df=df,origin=origin)           
+        self.addFailedTick(tick=t,data=df,origin=origin)           
         
 #NOTE: CREATING EACH LINK FOR EACH ATTRIBUTE
 '''How to create other kinds of links such as Temperatures/Distance etc. Don't see how this would impact the simul in general...?'''      
