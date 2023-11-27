@@ -62,7 +62,7 @@ def State_machine(components, tick, behaviour):
             tick +=1
             time.sleep(3)
         else:
-            toSave(df=df)
+            toSave(df=df,behaviour=behaviour)
     else:
         print(erro)
 #NOTE: Think about what to return here!!
@@ -93,6 +93,14 @@ def check(component):
         return True,erro
     
     
-def toSave(df):
+def toSave(df,behaviour):
+    errormsg=[]
+    Beh_Failure = [beh for beh in behaviour if not beh.state]
+    for beh in Beh_Failure:
+        mensagem_erro = f'Behaviour failed cause conditions where achivied: {[i.name for i in beh.condition]} were declared as FALSE'
+        df = df.append({'Failed Behaviour': mensagem_erro}, ignore_index=True)
+    # df = df.append(pd.Series(f'Behaviour failed becaused: {[i.name for i in beh.condition for beh in Beh_Failure]}', index=df.columns), ignore_index=True)
     df.to_csv(f'Simulation/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
+    time.sleep(1)
+    print('===================================DONE================================================')
     #cant save in a excel file. Dont know why yet, but its not priority i think. 

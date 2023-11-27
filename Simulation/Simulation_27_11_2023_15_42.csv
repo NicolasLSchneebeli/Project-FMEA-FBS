@@ -1,0 +1,8 @@
+Tick,Attribute,Component,Origin,Failed Behaviour
+0.0,material,motor,self,
+0.0,geometry,fan,self,
+1.0,geometry,fan,material from motor,
+2.0,geometry,motor,material from motor,
+2.0,material,motor,geometry from fan,
+2.0,geometry,motor,geometry from fan,
+,,,,"Behaviour failed cause conditions where achivied: ['material', 'geometry']"
