@@ -10,8 +10,10 @@ def State_machine(components, tick, behaviour):
     df= pd.DataFrame(columns= ['Tick','Attribute','Component','Origin'])
     
     if status == True:
+        stt=time.time()
         while all(behavior.state==True for behavior in behaviour):
             print(f'----------------------------TICK {tick}-------------------------------')
+            print(f'----------------------------Proprieties-------------------------------')
             for component in components:
                 for propriety in component.attribute: 
                     #IF ATTRIBUTE HAS NOT FAILED YET CONTINUE WITHIN THE LOOP
@@ -56,17 +58,17 @@ def State_machine(components, tick, behaviour):
                                     change its state too, dont see as priority either.'''
                                     print(f"{links_of_propriety[i][1].name} from {links_of_propriety[i][1].component.name} was infected by {propriety.name}")
                             else:
-                                continue   
+                                continue 
+            print(f'----------------------------Behaviour-------------------------------')
             for beh in behaviour:
                 beh.checkCondition()
             tick +=1
             time.sleep(3)
         else:
-            toSave(df=df,behaviour=behaviour)
+            toSave(df=df,behaviour=behaviour,start_time=stt)
     else:
         print(erro)
-#NOTE: Think about what to return here!!
-#Perhaps a list of which component infected what, idk 
+#NOTE: Remove the error for append method is a good way to improve the quality of the display and the results
         
         
         
@@ -93,14 +95,16 @@ def check(component):
         return True,erro
     
     
-def toSave(df,behaviour):
+def toSave(df,behaviour,start_time):
     errormsg=[]
     Beh_Failure = [beh for beh in behaviour if not beh.state]
     for beh in Beh_Failure:
-        mensagem_erro = f'Behaviour failed cause conditions where achivied: {[i.name for i in beh.condition]} were declared as FALSE'
+        mensagem_erro = f'`{beh.name} failed cause conditions where achivied: {[i.name for i in beh.condition]} FAILED'
         df = df.append({'Failed Behaviour': mensagem_erro}, ignore_index=True)
     # df = df.append(pd.Series(f'Behaviour failed becaused: {[i.name for i in beh.condition for beh in Beh_Failure]}', index=df.columns), ignore_index=True)
     df.to_csv(f'Simulation/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
     time.sleep(1)
     print('===================================DONE================================================')
+    print(f'CSV saved in: Simulation/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv')
+    print(f'Time to complete {time.time()- start_time} seconds')
     #cant save in a excel file. Dont know why yet, but its not priority i think. 
