@@ -6,13 +6,19 @@ import time
 
 #Funciton to run the simulation 
 def State_machine(components, tick, behaviour):
+    for beh in behaviour:
+        beh.state= True
+    for component in components:
+                for propriety in component.attribute: 
+                    propriety.state=True
+                    
     status,erro= check(component=components)
     df= pd.DataFrame(columns= ['Tick','Attribute','Component','Origin'])
     
     if status == True:
         stt=time.time()
         while all(behavior.state==True for behavior in behaviour):
-            print(f'----------------------------TICK {tick}-------------------------------')
+            print(f'============================CURRENTLY ON TICK {tick}===============================')
             print(f'----------------------------Proprieties-------------------------------')
             for component in components:
                 for propriety in component.attribute: 
@@ -57,8 +63,7 @@ def State_machine(components, tick, behaviour):
                                     I dont know how to acess the other and 
                                     change its state too, dont see as priority either.'''
                                     print(f"{links_of_propriety[i][1].name} from {links_of_propriety[i][1].component.name} was infected by {propriety.name}")
-                            else:
-                                continue 
+                             
             print(f'----------------------------Behaviour-------------------------------')
             for beh in behaviour:
                 beh.checkCondition()
