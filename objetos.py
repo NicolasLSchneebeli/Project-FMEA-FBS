@@ -35,6 +35,7 @@ class Propriety():
         self.state= True 
         self.component.addAttribute(self)
         self.link=[]
+        self.FailureMode={}
         # print(f"Attribute created named {self.name} part of {self.component.name}")   
    
     #Just to confirm if is ok
@@ -57,11 +58,17 @@ class Propriety():
             print(f"There is a link between {link[0].name} (FROM: {link[0].component.name}) and {link[1].name} (FROM: {link[1].component.name}) with risk {link[3]}") 
         return self.link
     
-    #Change our entity state to FAILEd
+    #Change our entity state to FAILED while being infected by somebody else
     def getInfected(self,t,origin,df):
         self.state=False
         self.addFailedTick(tick=t,data=df,origin=origin)           
-        
+    
+    def addFailureMode(self,Names,Risks):
+        if sum(Risks)!=100:
+            print("ATTENTION: Sum of probabilities diferent that 100%")
+            pass #MAKE SOMEHOW TO CHECK AND INTERRUPT
+        for i in range(len(Names)):
+            self.FailureMode[Names[i]]= Risks[i] 
 #NOTE: CREATING EACH LINK FOR EACH ATTRIBUTE
 '''How to create other kinds of links such as Temperatures/Distance etc. Don't see how this would impact the simul in general...?'''      
 class Link():

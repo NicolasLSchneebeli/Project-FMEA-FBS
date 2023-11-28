@@ -32,7 +32,14 @@ def State_machine(components, tick, behaviour):
                         if result == "Failed":
                             propriety.state=False
                             print(f"{propriety.name} from {propriety.component.name} *just* failed on tick: {tick}")
-                            propriety.addFailedTick(tick=tick,data=df,origin='self')
+                            failures=list(propriety.FailureMode.keys())
+                            chances=[propriety.FailureMode[i] for i in failures]
+                            if chances == []:
+                                propriety.addFailedTick(tick=tick,data=df,origin='self')
+                            else:
+                                result=rd.choices(failures,chances,k=1)[0]
+                                propriety.addFailedTick(tick=tick,data=df,origin=f'self ({result})')
+
                             
                         else:
                             print(f"{propriety.name} from {propriety.component.name} is {result}")
