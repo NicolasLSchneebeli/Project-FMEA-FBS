@@ -1,0 +1,5 @@
+Tick,Attribute,Component,Origin,Failed Behaviour
+1.0,geometry,fan,<objetos.Propriety object at 0x000001F2662EDA90>,
+2.0,material,motor,<objetos.Propriety object at 0x000001F266A722D0>,
+3.0,geometry,motor,<objetos.Propriety object at 0x000001F266A722D0>,
+,,,,"`Movement failed cause conditions where achivied: ['material', 'geometry'] FAILED"
