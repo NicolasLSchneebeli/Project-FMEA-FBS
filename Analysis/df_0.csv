@@ -1,4 +1,0 @@
-Tick,Attribute,Component,Origin
-0,material,motor,self
-0,geometry,fan,self
-1,geometry,motor,geometry from fan

@@ -156,13 +156,9 @@ def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k):
 
 
 ''''RIGHT NOW I HAVE TO DO IT MANUALLY'''
-def createMatrix(components: list[Component]):
-    attrs=[]
-    for component in components:
-        for propriety in component.attribute:
-            attrs.append(propriety) 
-            
-    return np.zeros((len(attrs),len(attrs),2),dtype=int),attrs
+def createMatrix(attributes_list: list[Propriety]):
+    attrs= attributes_list
+    return np.zeros((len(attrs),len(attrs),2),dtype=int)
 
 def createLink(matrix,attribute_list: list[Propriety],attribute1: Propriety,attribute2: Propriety,risk,time: float):
     """Finding the index related to the attributes"""   
@@ -173,7 +169,7 @@ def createLink(matrix,attribute_list: list[Propriety],attribute1: Propriety,attr
     matrix[i, j] = [risk,time] 
     matrix[j, i] = [risk,time]
     
-    
+# def nameMatrix(attrs,):
     
 
 
