@@ -202,6 +202,7 @@ def count_and_list(series):
     count_dict = {value: series[series == value].count() for value in unique_values}
     return unique_values, count_dict
 
+
 '''Groupby Attribute.Component given a mean tick to fail and the unique listing to Origin '''
 def Count_FailureModes(df):
     result = df.groupby('Attribute.Component').agg({
