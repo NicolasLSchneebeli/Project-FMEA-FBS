@@ -89,7 +89,6 @@ def State_machine(components, behaviour,link_matrix,attrs,number_of_interaction=
             else:
                 df.to_csv(f'Analysis/df_{k}.csv',index=False)
                 toSave(df=df,behaviour=behaviour,start_time=stt,tick=tick,k=k)
-                time.sleep(3)
                 k+=1
         else:
             print('Number of iteractions achieved!')
