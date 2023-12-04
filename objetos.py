@@ -45,12 +45,13 @@ class Propriety():
     #Add time when this component failed!      
     def addFailedTick(self,tick,data,origin):
         self.FailedTick= tick
+        self.state=False
         self.source=origin
-        if origin.name != self.name:
-            data.loc[len(data)]=(self.FailedTick,self.name,self.component.name,f"{origin.name} from {origin.component}")
-        else:
+        
+        if origin.name.lower() == self.name.lower() and origin.component.name == self.component.name:
             data.loc[len(data)]=(self.FailedTick,self.name,self.component.name,'self')
-
+        else:
+            data.loc[len(data)]=(self.FailedTick,self.name,self.component.name,f"{origin.name} from {origin.component.name}")
         
     
     #Create via ENTITIY NAMED LINK!!
@@ -64,9 +65,9 @@ class Propriety():
         return self.link
     
     #Change our entity state to FAILED
-    def getInfected(self,t,origin,df):
+    def getInfected(self,tick,origin,data):
         self.state=False
-        self.addFailedTick(tick=t,data=df,origin=origin)  
+        self.addFailedTick(tick=tick,data=data,origin=origin)  
         
         
     '''For FMEA Table. Perhaps adding a dictionary
