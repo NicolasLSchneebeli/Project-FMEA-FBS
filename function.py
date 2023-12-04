@@ -23,7 +23,7 @@ def State_machine(components: list[Component], behaviour: list[Behaviour],link_m
                         for propriety in component.attribute: 
                             propriety.state=True
                         
-            df= pd.DataFrame(columns= ['Tick','Attribute','Component','Origin'])
+            df= pd.DataFrame(columns= ['Tick','Attribute.Component','Origin'])
         
         
             stt=time.time()
@@ -87,8 +87,13 @@ def State_machine(components: list[Component], behaviour: list[Behaviour],link_m
                     beh.checkCondition()
                 tick +=1
             else:
-                df.to_csv(f'Analysis/df_{k}.csv',index=False)
-                toSave(df=df,behaviour=behaviour,start_time=stt,tick=tick,k=k)
+                principal= f'Simulations/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}'
+                sec_=principal+'\Analysis'
+                sec__=principal+'\CauseOfFailure'
+                os.makedirs(principal, exist_ok=True)
+                os.makedirs(f'{sec_}',exist_ok=True)
+                os.makedirs(f'{sec__}',exist_ok=True)
+                toSave(df=df,behaviour=behaviour,start_time=stt,tick=tick,k=k,path=principal)
                 k+=1
         else:
             print('Number of iteractions achieved!')
@@ -141,13 +146,15 @@ def check(component: list[Component]):
         return True,erro
     
     
-def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k):
+def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k,path):
 
     Beh_Failure = [beh for beh in behaviour if not beh.state]
+    df.to_csv(f'{path}/Analysis/DF_{k}{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
+
     for beh in Beh_Failure:
         mensagem_erro = f'`{beh.name} failed cause conditions where achivied: {[i.name for i in beh.condition]} FAILED'
         df = df.append({'Failed Behaviour': mensagem_erro}, ignore_index=True)
-    df.to_csv(f'Simulation/Simulation{k}__{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
+    df.to_csv(f'{path}\CauseOfFailure\Simulation{k}__{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
     print('===================================DONE================================================')
     print(f'CSV saved in: Simulation/Simulation{k}__{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv')
     print(f'Time to complete {time.time()- start_time} seconds')
@@ -187,3 +194,23 @@ def analysis(path):
     df = pd.concat(dfs, ignore_index=True)
     
     return df
+
+
+'''Function to list unique values and count their frequency'''
+def count_and_list(series):
+    unique_values = list(set(series))
+    count_dict = {value: series[series == value].count() for value in unique_values}
+    return unique_values, count_dict
+
+'''Groupby Attribute.Component given a mean tick to fail and the unique listing to Origin '''
+def Count_FailureModes(df):
+    result = df.groupby('Attribute.Component').agg({
+    'Tick': 'mean',
+    'Origin': count_and_list
+    }).reset_index()
+    '''Creating new columns to add Unique Origin and their counts'''
+    for value in result['Origin'].iloc[0][0]:
+        result[value + '_Count'] = result['Origin'].apply(lambda x: x[1].get(value, 0))
+    result = result.drop(columns=['Origin'])
+    result.columns = ['Attribute.Component', 'Mean Tick to Fail'] + [f'{value}' for value in result.columns[2:]]
+    return result
