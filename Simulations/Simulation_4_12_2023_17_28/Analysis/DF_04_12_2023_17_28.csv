@@ -1,0 +1,3 @@
+Tick,Attribute.Component,Origin
+0,geometry.motor,self
+2,material.motor,geometry from motor

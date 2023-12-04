@@ -204,7 +204,11 @@ def count_and_list(series):
 
 
 '''Groupby Attribute.Component given a mean tick to fail and the unique listing to Origin '''
-def Count_FailureModes(df):
+def countFailureModes(df=None, **path):
+    if df is None:
+        # If df is not provided, check if a file path is provided
+        if 'path' in path:
+            df = analysis(path['path'])
     result = df.groupby('Attribute.Component').agg({
     'Tick': 'mean',
     'Origin': count_and_list
