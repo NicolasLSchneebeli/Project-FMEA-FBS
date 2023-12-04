@@ -5,7 +5,7 @@ import numpy as np
 #Creating each component
 class Component():
     
-    def __init__(self,name) -> None:
+    def __init__(self,name: str) -> None:
         self.name= name
         self.attribute=[]
         print(f"{self.__class__.__name__} created named {self.name}")
@@ -28,14 +28,13 @@ class Component():
 #Create each ATTRIBUTE linkin it with a COMPONENT
 class Propriety():
     #Constructor
-    def __init__(self,name,component,risk) -> None:
+    def __init__(self,name: str,component: Component,risk: float) -> None:
         self.name= name
         self.component=component
         self.risk=risk
         self.state= True 
         self.source=[]
         self.component.addAttribute(self)
-        self.link=[]
         self.FailureMode={}
    
     #Just to confirm if is ok
@@ -53,27 +52,10 @@ class Propriety():
         else:
             data.loc[len(data)]=(self.FailedTick,self.name,self.component.name,f"{origin.name} from {origin.component.name}")
         
-    
-    #Create via ENTITIY NAMED LINK!!
-    def addLink(self,att2,risk,time):
-        print('Teste')
-    
-    #LIST OF LINKS COMPOSED OF ATT1, ATT2, RISK, COOLDOWN TIME, STATUS
-    def getLinks(self):
-        for link in self.link:
-            print(f"There is a link between {link[0].name} (FROM: {link[0].component.name}) and {link[1].name} (FROM: {link[1].component.name}) with risk {link[3]}") 
-        return self.link
-    
-    #Change our entity state to FAILED
-    def getInfected(self,tick,origin,data):
-        self.state=False
-        self.addFailedTick(tick=tick,data=data,origin=origin)  
-        
-        
     '''For FMEA Table. Perhaps adding a dictionary
     like linking to EXCESS or LOSS, idk yet.
     '''     
-    def addFailureMode(self,Names,Risks):
+    def addFailureMode(self,Names: list[str] ,Risks):
         if sum(Risks)!=100:
             print("Failure mode sum of probabilities diferent that 100%")
         for i in range(len(Names)):
@@ -81,7 +63,7 @@ class Propriety():
 
 class Behaviour():
     
-    def __init__(self,name) -> None:
+    def __init__(self,name: str) -> None:
         self.name=name
         self.condition= []
         self.c_state= True

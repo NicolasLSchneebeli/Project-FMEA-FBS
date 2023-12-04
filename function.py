@@ -9,7 +9,7 @@ from objetos import *
  
 
 #Funciton to run the simulation 
-def State_machine(components, behaviour,link_matrix,attrs,number_of_interaction=1):
+def State_machine(components: list[Component], behaviour: list[Behaviour],link_matrix: np.array ,attrs: list[Propriety],number_of_interaction: int=1 ):
     k=0
     status,erro= check(component=components)
     if status == True:
@@ -99,7 +99,7 @@ def State_machine(components, behaviour,link_matrix,attrs,number_of_interaction=
     
 #NOTE: Remove the error for append method is a good way to improve the quality of the display and the results
         
-def readFile(excel_file):     
+def readFile(excel_file: str):     
     df= pd.read_excel(excel_file,header=0)
     components_unique= df['Component'].unique()
     
@@ -123,7 +123,7 @@ def readFile(excel_file):
     
 
 #Checking for name erros, attributes without links and component list empty! 
-def check(component):
+def check(component: list[Component]):
     component_name= set()
     if component== []:
         erro=('Component list is empty!')
@@ -141,7 +141,7 @@ def check(component):
         return True,erro
     
     
-def toSave(df,behaviour,start_time,tick,k):
+def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k):
 
     Beh_Failure = [beh for beh in behaviour if not beh.state]
     for beh in Beh_Failure:
@@ -156,7 +156,7 @@ def toSave(df,behaviour,start_time,tick,k):
 
 
 ''''RIGHT NOW I HAVE TO DO IT MANUALLY'''
-def createMatrix(components):
+def createMatrix(components: list[Component]):
     attrs=[]
     for component in components:
         for propriety in component.attribute:
@@ -164,7 +164,7 @@ def createMatrix(components):
             
     return np.zeros((len(attrs),len(attrs),2),dtype=int),attrs
 
-def createLink(matrix,attribute_list,attribute1,attribute2,risk,time):
+def createLink(matrix,attribute_list: list[Propriety],attribute1: Propriety,attribute2: Propriety,risk,time: float):
     """Finding the index related to the attributes"""   
     i = attribute_list.index(attribute1)
     j = attribute_list.index(attribute2)
