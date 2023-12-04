@@ -1,5 +1,4 @@
 import random as rd
-import time 
 import numpy as np
 
 #Creating each component
