@@ -207,29 +207,39 @@ def count_and_list(series):
 
 
 '''Groupby Attribute.Component given a mean tick to fail and the unique listing to Origin '''
-def countFailureModes(df=None, **path):
+def countFailureModes_(df=None, **path):
     if df is None:
         # If df is not provided, check if a file path is provided
         if 'path' in path:
             df = analysis(path['path'])
+    
     result = df.groupby('Attribute.Component').agg({
-    'Tick': 'mean',
-    'Origin': count_and_list
+        'Tick': 'mean',
+        'Origin': count_and_list
     }).reset_index()
-    '''Creating new columns to add Unique Origin and their counts'''
-    for value in result['Origin'].iloc[0][0]:
+
+    # Extract unique values from 'Origin' dynamically
+    unique_origins = set()
+    for origin_list, _ in result['Origin']:
+        unique_origins.update(origin_list)
+
+    # Creating new columns for Unique Origin and their counts
+    for value in unique_origins:
         result[value] = result['Origin'].apply(lambda x: x[1].get(value, 0))
+
     result = result.drop(columns=['Origin'])
     result.columns = ['Attribute.Component', 'Mean Tick to Fail'] + [f'{value}' for value in result.columns[2:]]
+    
     return result
+
 
 '''Heatmap plot'''
 def plot_heatmap(count_values=None, origin_columns=None, normalize=False, df=None,path=None):
-    if count_values == None:
-        if df== None:
-            count_values=countFailureModes(path=path)
-        else:
-            count_values=countFailureModes(df=df)
+    # if count_values == None:
+    #     if df== None:
+    #         count_values=countFailureModes(path=path)
+    #     else:
+    #         count_values=countFailureModes(df=df)
     if origin_columns is None:
         origin_columns = count_values.columns[2:]
         
