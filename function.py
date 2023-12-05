@@ -224,7 +224,12 @@ def countFailureModes(df=None, **path):
     return result
 
 '''Heatmap plot'''
-def plot_heatmap(count_values, origin_columns=None, normalize=False):
+def plot_heatmap(count_values=None, origin_columns=None, normalize=False, df=None,path=None):
+    if count_values == None:
+        if df== None:
+            count_values=countFailureModes(path=path)
+        else:
+            count_values=countFailureModes(df=df)
     if origin_columns is None:
         origin_columns = count_values.columns[2:]
         
