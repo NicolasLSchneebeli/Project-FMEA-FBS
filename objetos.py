@@ -47,9 +47,10 @@ class Propriety():
         self.source=origin
         
         if origin.name.lower() == self.name.lower() and origin.component.name == self.component.name:
-            data.loc[len(data)]=(self.FailedTick,f'{self.name}.{self.component.name}','self')
+            data.loc[len(data)]=(self.FailedTick,f'{self.name}.{self.component.name}',f'{self.name}.{self.component.name}')
         else:
-            data.loc[len(data)]=(self.FailedTick,f'{self.name}.{self.component.name}',f"{origin.name} from {origin.component.name}")
+            data.loc[len(data)]=(self.FailedTick,f'{self.name}.{self.component.name}',f"{origin.name}.{origin.component.name}")
+            
         
     '''For FMEA Table. Perhaps adding a dictionary
     like linking to EXCESS or LOSS, idk yet.

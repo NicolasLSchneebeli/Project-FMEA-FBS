@@ -6,7 +6,10 @@ import time
 import os 
 import glob 
 from objetos import *
- 
+import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
+
 
 #Funciton to run the simulation 
 def State_machine(components: list[Component], behaviour: list[Behaviour],link_matrix: np.array ,attrs: list[Propriety],number_of_interaction: int=1 ):
@@ -215,7 +218,33 @@ def countFailureModes(df=None, **path):
     }).reset_index()
     '''Creating new columns to add Unique Origin and their counts'''
     for value in result['Origin'].iloc[0][0]:
-        result[value + '_Count'] = result['Origin'].apply(lambda x: x[1].get(value, 0))
+        result[value] = result['Origin'].apply(lambda x: x[1].get(value, 0))
     result = result.drop(columns=['Origin'])
     result.columns = ['Attribute.Component', 'Mean Tick to Fail'] + [f'{value}' for value in result.columns[2:]]
     return result
+
+'''Heatmap plot'''
+def plot_heatmap(count_values, origin_columns=None, normalize=False):
+    if origin_columns is None:
+        origin_columns = count_values.columns[2:]
+        
+    heatmap_data = count_values.set_index('Attribute.Component')[origin_columns]
+    
+    if normalize== True:
+        '''Yet to be implemented'''
+        
+        print('Not yet implemented')
+
+
+    # To guarantee the same order 
+    order = [component.replace('_Count', '') for component in heatmap_data.index.tolist()]
+
+    # Plot 
+    plt.figure(figsize=(10, 8))
+    ax=sns.heatmap(heatmap_data.loc[order, :], annot=True, fmt='g', cmap='copper', linewidths=.5, square=True, cbar_kws={"orientation": "horizontal"})
+    plt.gca().invert_yaxis()
+
+    plt.title('Count of failures: Origin to Destiny', pad=20)
+    plt.xlabel('Attribute(Origin)')
+    plt.ylabel('Attribute (Destiny)')
+    plt.show()
