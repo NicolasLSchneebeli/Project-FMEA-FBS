@@ -207,7 +207,7 @@ def count_and_list(series):
 
 
 '''Groupby Attribute.Component given a mean tick to fail and the unique listing to Origin '''
-def countFailureModes_(df=None, **path):
+def countFailureMode(df=None, **path):
     if df is None:
         # If df is not provided, check if a file path is provided
         if 'path' in path:
