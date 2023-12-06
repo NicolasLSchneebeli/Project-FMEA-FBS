@@ -178,15 +178,22 @@ def createLink(matrix,attribute_list: list[Propriety],attribute1: Propriety,attr
     '''Adding/Updating the matrix for the values for the link with RISK, TIME'''
     matrix[i, j] = [risk,time] 
     matrix[j, i] = [risk,time]
-    
-# def nameMatrix(attrs,):
-    
+
+'''Create links randomly'''
+def createLinksRandom(matrix, attributes_list):
+    for i in range(len(attributes_list)):
+        rand_int_number_of_connections = rd.randint(0, len(attributes_list) // 2)
+        for j in range(rand_int_number_of_connections):
+            other_attr = rd.randint(0, len(attributes_list) - 1)
+            if other_attr != i:
+                createLink(matrix=matrix, attribute_list=attributes_list, attribute1=attributes_list[i], attribute2=attributes_list[other_attr], risk=rd.randint(0, 100), time=rd.randint(1, 5))
+                
+        other_attr = rd.randint(0, len(attributes_list) - 1)
+        createLink(matrix=matrix, attribute_list=attributes_list, attribute1=attributes_list[i], attribute2=attributes_list[other_attr], risk=rd.randint(0, 100), time=rd.randint(1, 5))
+
+    return matrix
 
 
-
-'''
-YET TO BE IMPLEMENTED PROPERLY
-'''  
 def analysis(path):
     path=os.path.join(path)
     csv_files = glob.glob(os.path.join(path, "*.csv")) 

@@ -1,0 +1,10 @@
+Tick,Attribute.Component,Origin
+0,material.motor,material.motor
+0,geometry.fan,geometry.fan
+0,material.heater,material.heater
+1,power.motor,power.motor
+1,rot.speed.fan,rot.speed.fan
+1,power.heater,power.heater
+2,geometry.motor,geometry.fan
+2,material.fan,material.fan
+2,material.nozzle,power.heater

@@ -1,0 +1,9 @@
+Tick,Attribute.Component,Origin,Failed Behaviour
+0.0,power.motor,power.motor,
+0.0,temperature.motor,temperature.motor,
+0.0,rot.speed.fan,rot.speed.fan,
+0.0,material.fan,material.fan,
+1.0,geometry.motor,geometry.motor,
+1.0,material.motor,material.motor,
+1.0,temperature.heater,temperature.heater,
+,,,"`Movement failed cause conditions where achivied: ['material', 'power', 'geometry'] FAILED"
