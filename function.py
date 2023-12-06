@@ -46,12 +46,8 @@ def State_machine(components: list[Component], behaviour: list[Behaviour],link_m
                                 print(f"{propriety.name} from {propriety.component.name} *just* failed on tick: {tick}")
                                 failures=list(propriety.FailureMode.keys())
                                 chances=[propriety.FailureMode[i] for i in failures]
-                                # if chances == []:
                                 propriety.addFailedTick(tick=tick,data=df,origin=propriety)
-                                # else:
-                                #     result=rd.choices(failures,chances,k=1)[0]
-                                #     propriety.addFailedTick(tick=tick,data=df,origin=f'self ({result})')
-
+                               
                                 
                             else:
                                 print(f"{propriety.name} from {propriety.component.name} is {result}")
@@ -75,7 +71,7 @@ def State_machine(components: list[Component], behaviour: list[Behaviour],link_m
                                         states_ = ["Working", "Failed"]
                                         weights = [100-risk,risk]
                                         resultinf= rd.choices(states_,weights,k=1)[0]
-                                        if resultinf == "Failed":
+                                        if resultinf == "Failed" and attrs[j].state ==True:
                                             attrs[j].addFailedTick(tick=tick,data=df,origin=propriety)
                                             matrix[i,j]=[0,0]
                                             matrix[j,i]=[0,0]
@@ -150,7 +146,6 @@ def check(component: list[Component]):
     
     
 def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k,path):
-
     Beh_Failure = [beh for beh in behaviour if not beh.state]
     df.to_csv(f'{path}/Analysis/DF_{k}{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
 
@@ -183,14 +178,12 @@ def createLink(matrix,attribute_list: list[Propriety],attribute1: Propriety,attr
 def createLinksRandom(matrix, attributes_list):
     for i in range(len(attributes_list)):
         rand_int_number_of_connections = rd.randint(0, len(attributes_list) // 2)
-        for j in range(rand_int_number_of_connections):
+        for j in range (0,rand_int_number_of_connections):
             other_attr = rd.randint(0, len(attributes_list) - 1)
-            if other_attr != i:
-                createLink(matrix=matrix, attribute_list=attributes_list, attribute1=attributes_list[i], attribute2=attributes_list[other_attr], risk=rd.randint(0, 100), time=rd.randint(1, 5))
-                
-        other_attr = rd.randint(0, len(attributes_list) - 1)
-        createLink(matrix=matrix, attribute_list=attributes_list, attribute1=attributes_list[i], attribute2=attributes_list[other_attr], risk=rd.randint(0, 100), time=rd.randint(1, 5))
+            while other_attr == i:
+                other_attr = rd.randint(0, len(attributes_list) - 1)
 
+            createLink(matrix=matrix, attribute_list=attributes_list, attribute1=attributes_list[i], attribute2=attributes_list[other_attr], risk=rd.randint(0, 100), time=rd.randint(1, 5))
     return matrix
 
 
