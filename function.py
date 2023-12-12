@@ -7,7 +7,6 @@ import os
 import glob 
 from objetos import *
 import seaborn as sns
-from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
 
 
@@ -159,12 +158,15 @@ def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k,path):
     print(f'Time to complete each tick {(time.time()- start_time)/tick} seconds')
 
 
-
-''''RIGHT NOW I HAVE TO DO IT MANUALLY'''
-def createMatrix(attributes_list: list[Propriety]):
+def createMatrix(attributes_list: list[Propriety], random: bool= False):
     attrs= attributes_list
-    return np.zeros((len(attrs),len(attrs),2),dtype=int)
-
+    matrix= np.zeros((len(attrs),len(attrs),2),dtype=int)
+    if random==True:
+        createLinksRandom(matrix=matrix,attributes_list=attrs)
+        return matrix
+    else:
+        return matrix
+    
 def createLink(matrix,attribute_list: list[Propriety],attribute1: Propriety,attribute2: Propriety,risk,time: float):
     """Finding the index related to the attributes"""   
     i = attribute_list.index(attribute1)
@@ -175,19 +177,19 @@ def createLink(matrix,attribute_list: list[Propriety],attribute1: Propriety,attr
     matrix[j, i] = [risk,time]
 
 '''Create links randomly'''
-def createLinksRandom(matrix, attributes_list):
+def createLinksRandom(matrix, attributes_list, numb_of_links:int=5, time_max:int=5, risk_max:int=100):
     for i in range(len(attributes_list)):
-        rand_int_number_of_connections = rd.randint(0, len(attributes_list) // 2)
+        rand_int_number_of_connections = rd.randint(0, numb_of_links)
         for j in range (0,rand_int_number_of_connections):
             other_attr = rd.randint(0, len(attributes_list) - 1)
             while other_attr == i:
                 other_attr = rd.randint(0, len(attributes_list) - 1)
 
-            createLink(matrix=matrix, attribute_list=attributes_list, attribute1=attributes_list[i], attribute2=attributes_list[other_attr], risk=rd.randint(0, 100), time=rd.randint(1, 5))
+            createLink(matrix=matrix, attribute_list=attributes_list, attribute1=attributes_list[i], attribute2=attributes_list[other_attr], risk=rd.randint(0,risk_max), time=rd.randint(1, time_max))
     return matrix
 
 
-def analysis(path):
+def analysis(path: str):
     path=os.path.join(path)
     csv_files = glob.glob(os.path.join(path, "*.csv")) 
     dfs=[]
@@ -234,29 +236,29 @@ def countFailureMode(df=None, **path):
 
 
 '''Heatmap plot'''
-def plot_heatmap(count_values=None, origin_columns=None, normalize=False, df=None,path=None):
-    # if count_values == None:
-    #     if df== None:
-    #         count_values=countFailureModes(path=path)
-    #     else:
-    #         count_values=countFailureModes(df=df)
+def plot_heatmap(count_values:list =None, origin_columns:list =None, normalize:bool=False,path:str=None):
+    '''If a path is given, it also works'''
+    if path is not None:  
+        count_values=countFailureMode(path=path)
+    '''Eliminate the reading of the 2 first columns ATTRIBUTE.COMPONENT and MEAN TICK TO FAIL'''
     if origin_columns is None:
         origin_columns = count_values.columns[2:]
         
     heatmap_data = count_values.set_index('Attribute.Component')[origin_columns]
     
-    if normalize== True:
+    '''Don't know how to normalize it yet. Ideas?'''
+    if normalize== True: 
         '''Yet to be implemented'''
         
         print('Not yet implemented')
 
 
-    # To guarantee the same order 
+    ''' To guarantee the same order '''
     order = [component.replace('_Count', '') for component in heatmap_data.index.tolist()]
 
-    # Plot 
+    '''Plot of the map'''
     plt.figure(figsize=(10, 8))
-    ax=sns.heatmap(heatmap_data.loc[order, :], annot=True, fmt='g', cmap='copper', linewidths=.5, square=True, cbar_kws={"orientation": "horizontal"})
+    ax=sns.heatmap(heatmap_data.loc[order, :], annot=True, fmt='g', cmap='copper', linewidths=.5, square=True, cbar_kws={"orientation": "vertical"})
     plt.gca().invert_yaxis()
 
     plt.title('Count of failures: Origin to Destiny', pad=20)
