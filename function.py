@@ -8,6 +8,7 @@ import glob
 from objetos import *
 import seaborn as sns
 import matplotlib.pyplot as plt
+from collections import Counter
 
 
 #Funciton to run the simulation 
@@ -95,7 +96,7 @@ def State_machine(components: list[Component], behaviour: list[Behaviour],link_m
                 k+=1
         else:
             print('Number of iteractions achieved!')
-    
+            return f'{principal}/Analysis/'
     else:
         print(erro)
         
@@ -156,7 +157,7 @@ def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k,path):
     print(f'CSV saved in: Simulation/Simulation{k}__{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv')
     print(f'Time to complete {time.time()- start_time} seconds')
     print(f'Time to complete each tick {(time.time()- start_time)/tick} seconds')
-
+    
 
 def createMatrix(attributes_list: list[Propriety], random: bool= False):
     attrs= attributes_list
@@ -200,6 +201,10 @@ def analysis(path: str):
     
     return df
 
+'''Function to find all Attributes with components that present, so the user can choose 1'''
+def list_repeat(list_attr: list[str], attr: str):
+    repated_index=[index for index, name in enumerate(list_attr) if name == attr]
+    return repated_index
 
 '''Function to list unique values and count their frequency'''
 def count_and_list(series):
