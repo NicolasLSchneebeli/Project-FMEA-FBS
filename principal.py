@@ -1,11 +1,6 @@
 from objetos import *
 from function import *
-try:
-    import openpyxl
-except ImportError:
-    print("Error: Required module 'openpyxl' not found.")
-    print("Please create and activate a virtual environment, then run: pip install -r requirements.txt")
-    exit(1)
+
 possible_inputs= ['Y', 'N']
 
 
