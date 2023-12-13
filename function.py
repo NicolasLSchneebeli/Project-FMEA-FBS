@@ -86,7 +86,7 @@ def State_machine(components: list[Component], behaviour: list[Behaviour],link_m
                     beh.checkCondition()
                 tick +=1
             else:
-                principal= f'Simulations/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}'
+                principal= f'PROJETO_FRANÇA/Simulations/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}'
                 sec_=principal+'\Analysis'
                 sec__=principal+'\CauseOfFailure'
                 os.makedirs(principal, exist_ok=True)
@@ -103,7 +103,7 @@ def State_machine(components: list[Component], behaviour: list[Behaviour],link_m
     
 #NOTE: Remove the error for append method is a good way to improve the quality of the display and the results
         
-def readFile(excel_file: str):     
+def readFile(excel_file: str):
     df= pd.read_excel(excel_file,header=0)
     components_unique= df['Component'].unique()
     
@@ -146,6 +146,7 @@ def check(component: list[Component]):
     
     
 def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k,path):
+    print('======= SAVING ========')
     Beh_Failure = [beh for beh in behaviour if not beh.state]
     df.to_csv(f'{path}/Analysis/DF_{k}{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
 
@@ -154,7 +155,7 @@ def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k,path):
         df = df.append({'Failed Behaviour': mensagem_erro}, ignore_index=True)
     df.to_csv(f'{path}\CauseOfFailure\Simulation{k}__{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
     print('===================================DONE================================================')
-    print(f'CSV saved in: Simulation/Simulation{k}__{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv')
+    print(f'CSV saved in: Simulations/Simulation{k}__{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv')
     print(f'Time to complete {time.time()- start_time} seconds')
     print(f'Time to complete each tick {(time.time()- start_time)/tick} seconds')
     

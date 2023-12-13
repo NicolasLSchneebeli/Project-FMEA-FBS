@@ -7,11 +7,17 @@ except ImportError:
     print("Please create and activate a virtual environment, then run: pip install -r requirements.txt")
     exit(1)
 possible_inputs= ['Y', 'N']
+
+
 print("=============== Start Program ================")
+print('========= Please read the HELPME for info about input and commands. The excel file should have columns in this order: =========')
+print('Component, Attribute, Prob_of_Failure')
+print('They are case-sensitive and in this order! Attention for the underline (_) as well!')
+
 print('Name of the excel:' )
 input_file=input()
-# input_file='Teste2'
 list_comp,attributes=readFile(excel_file=f'Projeto_FRANÇA/{input_file}.xlsx')
+
 print(f'Using file named as {input_file}')
 names=[attr.name for attr in attributes ]
 
@@ -115,13 +121,13 @@ while optbeh == 'Y':
 
         rep_cond=list_repeat(list_attr=names,attr=attrcond)
         if len(rep_cond)>1:
-            print(rep_cond)
             print('Please select from which component and attribute do you wish to create a condition:')
             comp_names =[attributes[index].component.name for index in rep_cond]
             print(f'For {attrcond} there are:{comp_names} ')
             inp_cond= input('Select which component name do you wish: ').lower()
             while inp_cond not in comp_names:
-                print("Component not found")
+                print(comp_names)
+                print("Component not found. Careful with spacing")
                 inp_cond= input('Select which component name do you wish: ').lower()
         
             attrcond_index = rep_cond[comp_names.index(inp_cond)]
@@ -129,19 +135,19 @@ while optbeh == 'Y':
             attrcond_index=names.index(attrcond)
         beh.addCondition(attributes[attrcond_index])    
         optcond=input('Wish to add more conditions? Y/N ' ).upper()
-        if optcond not in possible_inputs:
+        while optcond not in possible_inputs:
             optcond=input('Wish to add more conditions? Y/N ' ).upper()
 
     optbeh= input('Wish to continue creating behaviour? Y/N ').upper()
-    if optbeh not in possible_inputs:
+    while optbeh not in possible_inputs:
         optbeh= input('Wish to continue creating behaviour? Y/N ').upper()
 
         
         
 print('=========== Proceed to simulation ===========')
 numb_of_interactions=(input('Run how many times the simulation? '))
-
-caminho=State_machine(components=list_comp,behaviour=beh_list,link_matrix=links,attrs= attributes)
+numb_of_interactions=int(numb_of_interactions)
+caminho=State_machine(components=list_comp,behaviour=beh_list,link_matrix=links,attrs= attributes, number_of_interaction=numb_of_interactions)
 
 option=input('Wish to proceed with analysis? Y/N ').upper()
 while option not in possible_inputs:
