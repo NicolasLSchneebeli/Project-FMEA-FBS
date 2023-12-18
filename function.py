@@ -160,15 +160,41 @@ def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k,path):
     print(f'Time to complete each tick {(time.time()- start_time)/tick} seconds')
     
 
-def createMatrix(attributes_list: list[Propriety], random: bool= False):
+    
+    
+def createMatrix(attributes_list: list[Propriety], random: bool = False, save_excel: bool = False):
     attrs= attributes_list
     matrix= np.zeros((len(attrs),len(attrs),2),dtype=int)
     if random==True:
         createLinksRandom(matrix=matrix,attributes_list=attrs)
         return matrix
+    if save_excel == True:
+        matrix = np.zeros((len(attrs), len(attrs)), dtype=int)
+        df=pd.DataFrame(matrix, columns=[f'{i.name}.{i.component.name}' for i in attrs], index=[f'{i.name}.{i.component.name}' for i in attrs])
+        df_time=df.copy()
+        df_risk=df.copy()
+        file_name=f'Projeto_FRANÇA/Links_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.xlsx'
+        with pd.ExcelWriter(f'{file_name}', engine='xlsxwriter') as writer:
+            df_risk.to_excel(writer, sheet_name='Risk')
+            df_time.to_excel(writer, sheet_name='Time')
+        return  file_name ,print(f'Save as {file_name}')
+
     else:
         return matrix
+
+
     
+def readMatrix(path: str):
+    df_time=pd.read_excel(path,sheet_name='Time')
+    df_risk=pd.read_excel(path,sheet_name='Risk')
+    df_risk=df_risk.drop(columns='Unnamed: 0')
+    df_time=df_time.drop(columns='Unnamed: 0')                
+    array_time = df_time.to_numpy()
+    array_risk = df_risk.to_numpy()
+    array_combined = np.concatenate([array_risk[:, :, np.newaxis], array_time[:, :, np.newaxis]], axis=2)
+    return array_combined
+    
+
 def createLink(matrix,attribute_list: list[Propriety],attribute1: Propriety,attribute2: Propriety,risk,time: float):
     """Finding the index related to the attributes"""   
     i = attribute_list.index(attribute1)

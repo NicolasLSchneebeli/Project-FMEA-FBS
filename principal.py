@@ -5,8 +5,8 @@ possible_inputs= ['Y', 'N']
 
 
 print("=============== Start Program ================")
-print('========= Please read the HELPME for info about input and commands. The excel file should have columns in this order: =========')
-print('Component, Attribute, Prob_of_Failure')
+print('Please read the HELPME for info about input and commands. The excel file should have columns in this order: ')
+print('================ Component, Attribute, Prob_of_Failure ================')
 print('They are case-sensitive and in this order! Attention for the underline (_) as well!')
 
 print('Name of the excel:' )
@@ -32,68 +32,84 @@ if inp =='Y':
             inp_=input('Want to renegenarate? Y/N ').upper()
 
 else:
-    links=createMatrix(attributes_list=attributes)
-    print('==================Proceed to create links ==================')
-    opt= 'Y'
-    while opt== 'Y':
-        print(names)
-        attr1=input(f'Choose the first attribute name: ').lower()
-        while attr1 not in names:
-            print(f'Attribute "{attr1}" not found. Careful with spelling/ spacing.')
-            attr1=input(f'Choose the first attribute name: ').lower()
-        repetetions_comp1= list_repeat(names,attr=attr1)
-        if len(repetetions_comp1) >1:
-            print('Please select from which component and attribute do you wish to create a link:')
-            comp_names =[attributes[index].component.name for index in repetetions_comp1]
-            print(f'For {attr1} there are:{comp_names} ')
-            inp_comp1= input('Select which component name do you wish: ').lower()
-            while inp_comp1 not in comp_names:
-                print("Component not found")
-                inp_comp1= input('Select which component name do you wish: ').lower()
-            attr1_index = repetetions_comp1[comp_names.index(inp_comp1)]
-            
-        else:
-            attr1_index=names.index(attr1)
-            
-            
-        attr2=input(f'Choose the second attribute name: ').lower()
-        while attr2 not in names:
-            print(f'Attribute "{attr2}" not found. Careful with spelling/ spacing.')
-            attr2=input(f'Choose the second attribute name: ').lower()
-            
-        repetetions_comp2= list_repeat(names, attr=attr2)
-
-        if len(repetetions_comp2) >1:
-            print('Please select from which component and attribute do you wish to create a link:')
-            comp_names =[attributes[index].component.name for index in repetetions_comp2]
-            print(f'For {attr2} there are:{comp_names} ')
-            inp_comp2= input('Select which component name do you wish: ').lower()
-            while inp_comp2 not in comp_names:
-                print("Component not found")
-                inp_comp2= input('Select which component name do you wish: ').lower()
-            attr2_index = repetetions_comp2[comp_names.index(inp_comp2)]
-
-        else:
-            attr2_index=names.index(attr2)
-                    
-        risk= int(input('Choose risk: '))
-        time= int(input('Choose time condition to infection: '))
+    opt_= ''
+    while opt_ not in possible_inputs:
+        opt_= input('Do you wish to insert a excel with links? Y/N ').upper()
+    if opt_ == 'Y':
+        opt= ''
+        while opt not in possible_inputs:
+           opt=input('Wish to create a excel sheet for filling in? Y/N ').upper()
+        if opt== 'Y':
+            file_name_links=createMatrix(attributes_list=attributes,save_excel=True)
         
-        if risk <=0 or risk >100:
-            print('Invalid risk value')
-            risk= input('Choose risk: ')
-            continue
-        if time <0:
-            print('Invalid time value')
-            time= input('Choose time condition to infection: ')
-            continue
+        print('================== Proceed to load excel link file ==================')
+        print('Please choose the name of the link excel file: ')
+        link_excel=input(' ')
+        links=readMatrix(f'Projeto_FRANÇA/{link_excel}.xlsx')
+        
+    if opt_=='N':
+        links=createMatrix(attributes_list=attributes)
+        print('================== Proceed to create links ==================')
+        opt= 'Y'
+        while opt== 'Y':
+            print(names)
+            attr1=input(f'Choose the first attribute name: ').lower()
+            while attr1 not in names:
+                print(f'Attribute "{attr1}" not found. Careful with spelling/ spacing.')
+                attr1=input(f'Choose the first attribute name: ').lower()
+            repetetions_comp1= list_repeat(names,attr=attr1)
+            if len(repetetions_comp1) >1:
+                print('Please select from which component and attribute do you wish to create a link:')
+                comp_names =[attributes[index].component.name for index in repetetions_comp1]
+                print(f'For {attr1} there are:{comp_names} ')
+                inp_comp1= input('Select which component name do you wish: ').lower()
+                while inp_comp1 not in comp_names:
+                    print("Component not found")
+                    inp_comp1= input('Select which component name do you wish: ').lower()
+                attr1_index = repetetions_comp1[comp_names.index(inp_comp1)]
+                
+            else:
+                attr1_index=names.index(attr1)
+                
+                
+            attr2=input(f'Choose the second attribute name: ').lower()
+            while attr2 not in names:
+                print(f'Attribute "{attr2}" not found. Careful with spelling/ spacing.')
+                attr2=input(f'Choose the second attribute name: ').lower()
+                
+            repetetions_comp2= list_repeat(names, attr=attr2)
 
-        else:
-            createLink(matrix=links,attribute_list=attributes,attribute1=attributes[attr1_index], attribute2=attributes[attr2_index], risk=risk, time=time)
-            print(f'Created a link between {attr1} and {attr2} with risk {risk} and time condition {time}')
-            opt=input('Do you wish to create more links? Y/N ').upper()
-            while opt not in possible_inputs:
+            if len(repetetions_comp2) >1:
+                print('Please select from which component and attribute do you wish to create a link:')
+                comp_names =[attributes[index].component.name for index in repetetions_comp2]
+                print(f'For {attr2} there are:{comp_names} ')
+                inp_comp2= input('Select which component name do you wish: ').lower()
+                while inp_comp2 not in comp_names:
+                    print("Component not found")
+                    inp_comp2= input('Select which component name do you wish: ').lower()
+                attr2_index = repetetions_comp2[comp_names.index(inp_comp2)]
+
+            else:
+                attr2_index=names.index(attr2)
+                        
+            risk= int(input('Choose risk: '))
+            time= int(input('Choose time condition to infection: '))
+            
+            if risk <=0 or risk >100:
+                print('Invalid risk value')
+                risk= input('Choose risk: ')
+                continue
+            if time <0:
+                print('Invalid time value')
+                time= input('Choose time condition to infection: ')
+                continue
+
+            else:
+                createLink(matrix=links,attribute_list=attributes,attribute1=attributes[attr1_index], attribute2=attributes[attr2_index], risk=risk, time=time)
+                print(f'Created a link between {attr1} and {attr2} with risk {risk} and time condition {time}')
                 opt=input('Do you wish to create more links? Y/N ').upper()
+                while opt not in possible_inputs:
+                    opt=input('Do you wish to create more links? Y/N ').upper()
 
             
 '''Creating BEHAVIOURS'''
