@@ -1,0 +1,7 @@
+Tick,Attribute.Component,Origin
+1,geometry.motor,geometry.motor
+5,material.motor,material.motor
+5,material.Nozzle,material.Nozzle
+8,power.fan,material.motor
+8,geometry.Nozzle,material.Nozzle
+8,material.Body,material.Body

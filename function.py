@@ -217,6 +217,7 @@ def createLinksRandom(matrix, attributes_list, numb_of_links:int=5, time_max:int
     return matrix
 
 
+
 def analysis(path: str):
     path=os.path.join(path)
     csv_files = glob.glob(os.path.join(path, "*.csv")) 

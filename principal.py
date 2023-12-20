@@ -30,6 +30,8 @@ if inp =='Y':
         inp_=input('Want to renegenarate? Y/N ').upper()
         while inp_ not in possible_inputs:
             inp_=input('Want to renegenarate? Y/N ').upper()
+        print(names)
+        
 
 else:
     opt_= ''
@@ -123,6 +125,7 @@ while optbeh == 'Y':
     beh_list.append(beh)
     optcond='Y'
     while optcond=='Y':
+        attrcond=''
         print('-------------------------------------------------------')
         print(names)
         attrcond=input(f'Choose component condition for {beh.name} to stop:  ')
@@ -135,6 +138,7 @@ while optbeh == 'Y':
             print('Please select from which component and attribute do you wish to create a condition:')
             comp_names =[attributes[index].component.name for index in rep_cond]
             print(f'For {attrcond} there are:{comp_names} ')
+            inp_cond=''
             inp_cond= input('Select which component name do you wish: ').lower()
             while inp_cond not in comp_names:
                 print(comp_names)

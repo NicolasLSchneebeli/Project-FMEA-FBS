@@ -1,0 +1,7 @@
+Tick,Attribute.Component,Origin,Failed Behaviour
+3.0,material.Nozzle,material.Nozzle,
+3.0,material.Body,material.Body,
+5.0,power.fan,material.Body,
+6.0,geometry.motor,geometry.motor,
+6.0,geometry.Nozzle,material.Nozzle,
+,,,"`no action failed cause conditions where achivied: ['power', 'geometry'] FAILED"
