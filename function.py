@@ -5,7 +5,7 @@ import random as rd
 import time
 import os 
 import glob 
-from objetos import *
+from objects import *
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -86,7 +86,7 @@ def State_machine(components: list[Component], behaviour: list[Behaviour],link_m
                     beh.checkCondition()
                 tick +=1
             else:
-                principal= f'PROJETO_FRANÇA/Simulations/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}'
+                principal= f'/Simulations/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}'
                 sec_=principal+'\Analysis'
                 sec__=principal+'\CauseOfFailure'
                 os.makedirs(principal, exist_ok=True)
@@ -114,6 +114,7 @@ def readFile(excel_file: str):
         component = line['Component']
         attribute = line['Attribute']
         prob_failure = line['Prob_of_Failure']
+        severity= line['Severity']
     
         if component not in relacoes:
             relacoes[component] = {}
@@ -122,7 +123,7 @@ def readFile(excel_file: str):
     attributos_= []
     for comp in list_comp:
         for attr in relacoes[comp.name]:
-            attributos_.append(Propriety(component=comp, name=attr, risk=relacoes[comp.name][attr]))
+            attributos_.append(Propriety(component=comp, name=attr, risk=relacoes[comp.name][attr],severity=severity))
     return list_comp,attributos_
     
 
@@ -231,8 +232,7 @@ def analysis(path: str):
 
 '''Function to find all Attributes with components that present, so the user can choose 1'''
 def list_repeat(list_attr: list[str], attr: str):
-    repated_index=[index for index, name in enumerate(list_attr) if name == attr]
-    return repated_index
+    return [index for index, name in enumerate(list_attr) if name == attr]
 
 '''Function to list unique values and count their frequency'''
 def count_and_list(series):
@@ -267,34 +267,60 @@ def countFailureMode(df=None, **path):
     
     return result
 
+def RPN_analysis(df_counted: pd.DataFrame, attribute_list: list[Propriety] ):
+    
+    '''Finding the number of iterations!'''
+    num=df_counted.iloc[:,2:].sum(axis=1)
+    num=pd.DataFrame(num)
+    max_=pd.DataFrame(num).iloc[:,0].max()
+    '''Normalizing the plot to find probabilies in 0 to 100!'''
+    df_counted.iloc[:,2:]=df_counted.iloc[:,2:].apply(lambda x:(x-0)/(max_-0)*( 100- 0) )
+    for name in attribute_list: 
+        index_found = next((i for i, column in enumerate(df_counted.columns) if column.lower() == f'{name.name}.{name.component.name}'.lower()), None)
+        if index_found is not None:
+            df_counted.iloc[:,index_found]= name.severity*  df_counted.iloc[:,index_found]
+    return df_counted
+
 
 '''Heatmap plot'''
-def plot_heatmap(count_values:list =None, origin_columns:list =None, normalize:bool=False,path:str=None):
+def plot_heatmap( attribute_list: list[Propriety],count_values:list =None, origin_columns:list =None,path:str=None,RPN: bool=False):
     '''If a path is given, it also works'''
     if path is not None:  
         count_values=countFailureMode(path=path)
     '''Eliminate the reading of the 2 first columns ATTRIBUTE.COMPONENT and MEAN TICK TO FAIL'''
     if origin_columns is None:
         origin_columns = count_values.columns[2:]
+    if RPN == True:
+        count_values= RPN_analysis(count_values, attribute_list )
+        heatmap_data = count_values.set_index('attribute.component')[origin_columns]
         
-    heatmap_data = count_values.set_index('Attribute.Component')[origin_columns]
+        ''' To guarantee the same order '''
+        order = [component.replace('_Count', '') for component in heatmap_data.index.tolist()]
+
+        cbar_Scale='linear'
+        x=sns.heatmap(heatmap_data.loc[order, :], annot=True, fmt='g', cmap='inferno', linewidths=.5, square=True, vmin=0, vmax=10000,  cbar_kws = {"orientation": "vertical"})
+        plt.gca().invert_yaxis()
+        plt.title('RPN', pad=20)
+        plt.xlabel('Attribute(Origin)')
+        plt.ylabel('Attribute (Destiny)')
+        plt.show()
+        
+        
+    else:
+        heatmap_data = count_values.set_index('Attribute.Component')[origin_columns]
+        plt.figure(figsize=(10, 8))
+        
+
+        ''' To guarantee the same order '''
+        order = [component.replace('_Count', '') for component in heatmap_data.index.tolist()]
+
+        '''Plot of the map'''
+        plt.figure(figsize=(10, 8))
+        ax=sns.heatmap(heatmap_data.loc[order, :], annot=True, fmt='g', cmap='copper', linewidths=.5, square=True, cbar_kws={"orientation": "vertical"})
+        plt.gca().invert_yaxis()
+
+        plt.title('Count of failures: Origin to Destiny', pad=20)
+        plt.xlabel('Attribute(Origin)')
+        plt.ylabel('Attribute (Destiny)')
+        plt.show()
     
-    '''Don't know how to normalize it yet. Ideas?'''
-    if normalize== True: 
-        '''Yet to be implemented'''
-        
-        print('Not yet implemented')
-
-
-    ''' To guarantee the same order '''
-    order = [component.replace('_Count', '') for component in heatmap_data.index.tolist()]
-
-    '''Plot of the map'''
-    plt.figure(figsize=(10, 8))
-    ax=sns.heatmap(heatmap_data.loc[order, :], annot=True, fmt='g', cmap='copper', linewidths=.5, square=True, cbar_kws={"orientation": "vertical"})
-    plt.gca().invert_yaxis()
-
-    plt.title('Count of failures: Origin to Destiny', pad=20)
-    plt.xlabel('Attribute(Origin)')
-    plt.ylabel('Attribute (Destiny)')
-    plt.show()
