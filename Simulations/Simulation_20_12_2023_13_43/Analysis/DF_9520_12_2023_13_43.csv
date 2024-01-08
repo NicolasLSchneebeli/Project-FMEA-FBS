@@ -1,5 +1,0 @@
-Tick,Attribute.Component,Origin
-1,geometry.motor,geometry.motor
-1,material.Body,material.Body
-2,material.motor,material.motor
-3,power.fan,material.Body

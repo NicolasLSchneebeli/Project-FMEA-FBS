@@ -1,7 +1,0 @@
-Tick,Attribute.Component,Origin,Failed Behaviour
-0.0,geometry.motor,geometry.motor,
-1.0,material.Body,material.Body,
-2.0,material.motor,geometry.motor,
-3.0,power.fan,power.fan,
-,,,"`no action failed cause conditions where achivied: ['power', 'geometry'] FAILED"
-,,,"`noise failed cause conditions where achivied: ['power', 'material', 'geometry'] FAILED"
