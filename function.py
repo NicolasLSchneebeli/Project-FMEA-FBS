@@ -86,17 +86,16 @@ def State_machine(components: list[Component], behaviour: list[Behaviour],link_m
                     beh.checkCondition()
                 tick +=1
             else:
-                principal= f'/Simulations/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}'
-                sec_=principal+'\Analysis'
-                sec__=principal+'\CauseOfFailure'
-                os.makedirs(principal, exist_ok=True)
-                os.makedirs(f'{sec_}',exist_ok=True)
-                os.makedirs(f'{sec__}',exist_ok=True)
-                toSave(df=df,behaviour=behaviour,start_time=stt,tick=tick,k=k,path=principal)
+                mainpath=f'Simulations'
+                simulation= f'{mainpath}/Simulation_{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}'
+                os.makedirs(mainpath, exist_ok=True)
+                os.makedirs(simulation,exist_ok=True)     
+                path=[mainpath,simulation]           
+                toSave(df=df,path=path,start_time=stt,tick=tick,k=k)
                 k+=1
         else:
             print('Number of iteractions achieved!')
-            return f'{principal}/Analysis/'
+            return f'{simulation}'
     else:
         print(erro)
         
@@ -146,15 +145,14 @@ def check(component: list[Component]):
         return True,erro
     
     
-def toSave(df: pd.DataFrame,behaviour: list[Behaviour],start_time,tick,k,path):
+def toSave(df: pd.DataFrame,path:list[str],start_time,tick,k):
     print('======= SAVING ========')
-    Beh_Failure = [beh for beh in behaviour if not beh.state]
-    df.to_csv(f'{path}/Analysis/DF_{k}{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
-
-    for beh in Beh_Failure:
-        mensagem_erro = f'`{beh.name} failed cause conditions where achivied: {[i.name for i in beh.condition]} FAILED'
-        df = df.append({'Failed Behaviour': mensagem_erro}, ignore_index=True)
-    df.to_csv(f'{path}\CauseOfFailure\Simulation{k}__{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
+    # Beh_Failure = [beh for beh in behaviour if not beh.state]
+    df.to_csv(f'{path[1]}/DF_{k}{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
+    # for beh in Beh_Failure:
+    #     mensagem_erro = f'`{beh.name} failed cause conditions where achivied: {[i.name for i in beh.condition]} FAILED'
+    #     df = df.append({'Failed Behaviour': mensagem_erro}, ignore_index=True)
+    # df.to_csv(f'{path}\CauseOfFailure\Simulation{k}__{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv',index=False)
     print('===================================DONE================================================')
     print(f'CSV saved in: Simulations/Simulation{k}__{dt.datetime.now().day}_{dt.datetime.now().month}_{dt.datetime.now().year}_{dt.datetime.now().hour}_{dt.datetime.now().minute}.csv')
     print(f'Time to complete {time.time()- start_time} seconds')
